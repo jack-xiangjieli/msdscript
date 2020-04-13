@@ -285,7 +285,7 @@ std::string optimize(std::string s) {
 }
 
 bool equals(std::string s1, std::string s2) {
-    return parse_str(s1) -> equals(parse_str(s2));
+    return parse_str(s1) -> optimize() -> equals(parse_str(s2) -> optimize());
 }
 
 
