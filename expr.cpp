@@ -1,5 +1,4 @@
 #include "expr.hpp"
-#include "catch.hpp"
 #include "value.hpp"
 #include "env.hpp"
 #include "step.hpp"
@@ -518,54 +517,3 @@ void CallExpr::step_interp() {
 
 //=============================================================
 
-
-TEST_CASE( "equals" ) {
-  CHECK( (NEW(NumExpr)(NumExpr(1)))->equals(NEW(NumExpr)(NumExpr(1))) );
-  CHECK( ! (NEW(NumExpr)(NumExpr(1)))->equals(NEW(NumExpr)(2)) );
-  CHECK( ! (NEW(NumExpr)(1))->equals(NEW(MultExpr)(NEW(NumExpr)(2), NEW(NumExpr)(4))) );
-  CHECK( (NEW(VarExpr)("x"))->equals(NEW(VarExpr)("x")) );
-  CHECK( ! (NEW(VarExpr)("x"))->equals(NEW(NumExpr)(5)) );
-
-  CHECK( (NEW(AddExpr)(NEW(NumExpr)(8), NEW(NumExpr)(9)))
-        ->equals(NEW(AddExpr)(NEW(NumExpr)(8), NEW(NumExpr)(9))) );
-  CHECK( ! (NEW(AddExpr)(NEW(NumExpr)(8), NEW(NumExpr)(9)))
-        ->equals(NEW(AddExpr)(NEW(NumExpr)(8), NEW(NumExpr)(10))) );
-  CHECK( ! (NEW(AddExpr)(NEW(NumExpr)(8), NEW(NumExpr)(9)))
-        ->equals(NEW(AddExpr)(NEW(NumExpr)(10), NEW(NumExpr)(9))) );
-  CHECK( ! (NEW(AddExpr)(NEW(NumExpr)(8), NEW(NumExpr)(9)))
-        ->equals(NEW(NumExpr)(8)) );
-}
-
-TEST_CASE( "value") {
-    PTR(EmptyEnv) emptyenv = NEW(EmptyEnv)();
-    
-  CHECK( (NEW(NumExpr)(10))->interp(emptyenv)->equals(NEW(NumVal)(10)) );
-  CHECK( (NEW(AddExpr)(NEW(NumExpr)(3), NEW(NumExpr)(2)))->interp(emptyenv)
-        ->equals(NEW(NumVal)(5)) );
-  CHECK( (NEW(MultExpr)(NEW(NumExpr)(3), NEW(NumExpr)(2)))->interp(emptyenv)
-        ->equals(NEW(NumVal)(6)) );
-    
-  CHECK( Step::interp_by_steps(NEW(AddExpr)(NEW(NumExpr)(3), NEW(NumExpr)(2))) -> equals(NEW(NumVal)(5)) );
-  CHECK( Step::interp_by_steps(NEW(MultExpr)(NEW(NumExpr)(3), NEW(NumExpr)(2))) -> equals(NEW(NumVal)(6)) );
-    
- 
-  CHECK( Step::interp_by_steps(NEW(LetExpr)("x", NEW(NumExpr)(8), NEW(AddExpr)(NEW(VarExpr)("x"), NEW(NumExpr)(2)))) -> equals(NEW(NumVal)(10)) );
-    
-    
-}
-
-TEST_CASE( "subst") {
-  CHECK( (NEW(NumExpr)(10))->subst("dog", NEW(NumVal)(3))
-        ->equals(NEW(NumExpr)(10)) );
-  CHECK( (NEW(VarExpr)("fish"))->subst("dog", NEW(NumVal)(3))
-        ->equals(NEW(VarExpr)("fish")) );
-  CHECK( (NEW(VarExpr)("dog"))->subst("dog", NEW(NumVal)(3) )
-        ->equals(NEW(NumExpr)(3)) );
-  CHECK( (NEW(VarExpr)("dog"))->subst("dog", NEW(BoolVal)(true) )
-            ->equals(NEW(BoolExpr)(true)) );
-  CHECK( (NEW(AddExpr)(NEW(NumExpr)(2), NEW(VarExpr)("dog")))->subst("dog", NEW(NumVal)(3))
-        ->equals(NEW(AddExpr)(NEW(NumExpr)(2), NEW(NumExpr)(3))) );
-  CHECK( (NEW(MultExpr)(NEW(NumExpr)(2), NEW(VarExpr)("dog")))->subst("dog", NEW(NumVal)(3))
-        ->equals(NEW(MultExpr)(NEW(NumExpr)(2), NEW(NumExpr)(3))) );
-    
-}

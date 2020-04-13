@@ -1,7 +1,7 @@
 #include "value.hpp"
 
 #include <stdexcept>
-#include "catch.hpp"
+
 #include "expr.hpp"
 #include "env.hpp"
 #include "cont.hpp"
@@ -155,47 +155,4 @@ void FunVal::call_step(PTR(Val) actual_arg_val, PTR(Cont) rest) {
 
 
 
-
-
-TEST_CASE( "values equals" ) {
-  CHECK( (NEW(NumVal)(5))->equals(NEW(NumVal)(5)) );
-  CHECK( ! (NEW(NumVal)(7))->equals(NEW(NumVal)(5)) );
-
-  CHECK( (NEW(BoolVal)(true))->equals(NEW(BoolVal)(true)) );
-  CHECK( ! (NEW(BoolVal)(true))->equals(NEW(BoolVal)(false)) );
-  CHECK( ! (NEW(BoolVal)(false))->equals(NEW(BoolVal)(true)) );
-
-  CHECK( ! (NEW(NumVal)(7))->equals(NEW(BoolVal)(false)) );
-  CHECK( ! (NEW(BoolVal)(false))->equals(NEW(NumVal)(8)) );
-}
-
-TEST_CASE( "add_to" ) {
-  
-  CHECK ( (NEW(NumVal)(5))->add_to(NEW(NumVal)(8))->equals(NEW(NumVal)(13)) );
-
-  CHECK_THROWS_WITH ( (NEW(NumVal)(5))->add_to(NEW(BoolVal)(false)), "not a number" );
-  CHECK_THROWS_WITH ( (NEW(BoolVal)(false))->add_to(NEW(BoolVal)(false)),
-                     "no adding booleans" );
-}
-
-TEST_CASE( "mult_with" ) {
-  
-  CHECK ( (NEW(NumVal)(5))->mult_with(NEW(NumVal)(8))->equals(NEW(NumVal)(40)) );
-
-  CHECK_THROWS_WITH ( (NEW(NumVal)(5))->mult_with(NEW(BoolVal)(false)), "not a number" );
-  CHECK_THROWS_WITH ( (NEW(BoolVal)(false))->mult_with(NEW(BoolVal)(false)),
-                     "no multiplying booleans" );
-}
-
-TEST_CASE( "value to_expr" ) {
-  CHECK( (NEW(NumVal)(5))->to_expr()->equals(NEW(NumExpr)(5)) );
-  CHECK( (NEW(BoolVal)(true))->to_expr()->equals(NEW(BoolExpr)(true)) );
-  CHECK( (NEW(BoolVal)(false))->to_expr()->equals(NEW(BoolExpr)(false)) );
-}
-
-TEST_CASE( "value to_string" ) {
-  CHECK( (NEW(NumVal)(5))->to_string() == "5" );
-  CHECK( (NEW(BoolVal)(true))->to_string() == "_true" );
-  CHECK( (NEW(BoolVal)(false))->to_string() == "_false" );
-}
 
